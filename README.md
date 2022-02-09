@@ -7,10 +7,23 @@ Use with Synology
 =================
 
 I feel like this could be useful for a bunch of things, but I use it on my
-Synology NAS to completely shut off port 80. Unfortunately, it's not as easy
-as running this container on port 80, since Synology doggedly refuses to
-give up that port. What you need to do is have anything _else_ in front of
-your nas (like a router, which you should have, don't put your nas on the
-open internet) that you can use to forward port 80 to whatever
-random port you expose from this container. Then absolutely any outside
-traffic that hits port 80 will see nothing but an HTTPS redirect.
+Synology NAS to completely shut off port 80. 
+
+Build, Save and Upload the Image
+------------------------------------
+
+    docker build -t hsts .
+    sudo docker save hsts:latest | gzip > hsts.tar.gz
+
+Launch the Container
+--------------------
+
+The only thing to keep in mind here is that you need to select "Use the same
+network as Docker Host" in the Synology UI. This is so that the container can
+forward LetsEncrypt requests back to Synology.
+
+Forward the Port
+----------------
+
+Now you need to forward port 80 at your firewall/router to port 6854 on your
+Synology NAS.
